@@ -1,0 +1,116 @@
+body {
+    background: linear-gradient(109.6deg, rgb(36, 45, 57) 11.2%, rgb(16, 37, 60) 51.2%, rgb(0, 0, 0) 98.6%);
+    width: 100%;
+    height: 100vh;
+    background-attachment: fixed;
+}
+
+nav, .sign, .box {
+    background: linear-gradient(60deg, #29323c 0%, #485563 100%);
+}
+
+.right {
+  margin-right: 40px;
+}
+
+.main-form {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.main-form input[name='show'] {
+    background-color: #212529;
+    width: 50%;
+    height: 2.5rem;
+    border: 1px solid #29323c;
+}
+
+.error {
+display: flex;
+width: 100%;
+justify-content: center;
+}
+
+.error h4 {
+    color: rgba(255,255,255, 0.8)
+}
+
+.main-form input[type='submit'] {
+    height: 2.5rem;
+    width: 5%;
+    min-width: 40px;
+}
+
+.flex-image {
+    height: 200px;
+    width: 142px;
+    object-fit: cover;
+}
+
+.flex-form {
+    margin: 0;
+    flex-basis: 0;
+}
+
+.centered-text {
+    text-align: center;
+    overflow: hidden;
+    max-width: 200px;
+    max-height: 1.5rem;
+}
+
+.item {
+    max-width: 200px;
+    overflow: hidden;
+    
+}
+
+.hidden {
+    display: none;
+}
+
+.link {
+    text-decoration: none;
+    color: var(--bs-navbar-brand-color);
+}
+
+.link-background:hover {
+    background-color: #0B427A60;
+    cursor: pointer;
+}
+
+.link-background:hover p {
+    max-height: 500px; 
+}
+
+.link-background:hover div button {
+    z-index: 5;
+}
+
+.link-background:hover div button:hover {
+    background-color: #0B427A;
+}
+
+.addToList, .details-btn {
+    position: absolute;
+    margin: 5px 0  0 5px;
+    background-color: #0B427A99;
+    border: none;
+}
+
+.addToList {
+  z-index: -1;
+}
+
+.details-btn:hover {
+  z-index: 2;
+  background-color: #0B427A;
+}
+
+
+.singleShow {
+    height:60vh;
+}
+

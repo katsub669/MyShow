@@ -1,0 +1,129 @@
+<%- include('partials/header.ejs'); -%>
+<!--search field-->
+<form action="/shows" method="POST" class="main-form my-4">
+    <input type="text" name="show" placeholder="Enter a show name" <%if (locals.searchedData) { %> value="<%= searchedData %>"<% }%> >
+    <input  type="submit" value="OK">
+</form>
+<!--checking for errors-->
+<% if (locals.error) { %>
+<div class="error">
+    <h4><%=error%></h4>
+</div>
+<!--welcome message-->
+<% } else if (locals.checker) {%>
+<div class="error">
+    <h4>Enter the show name above to start!</h4>
+</div>
+<% } %>
+
+<!--creating the list with the search results-->
+<% if (locals.content) { %>
+<div class="flex-container d-flex flex-row mb-3 justify-content-center align-items-center flex-wrap">
+    <% for( let i = 0; i < content.length; i++ ) {%>
+         
+    <!-- each search result is aform that sends to the chosen show's link + hidden submit-->
+    <form action='/details' method="POST" class="flex-form" > 
+        <!--input with values needed to render the details tab-->
+        <input type="text" class="hidden" name="chosenShow" 
+        <% if (content[i].show.externals.tvrage !== null) {%>  value="tvrage,<%= content[i].show.externals.tvrage %>"
+        <% } else if (content[i].show.externals.thetvdb !== null){%> value="thetvdb,<%= content[i].show.externals.thetvdb %>"
+        <% } else if (content[i].show.externals.imdb !== null){%> value="imdb,<%= content[i].show.externals.imdb %>"
+        <% } else {%> value="name,<%= content[i].show.name %>" <% } %> 
+        />
+        <input type="submit" class="hidden">
+      
+      <!-- Actually submitting the form -->
+        <a class="link" onclick="this.closest('form').submit(); return false;"> 
+            <!-- Creating multiple DIVs with shows' names + images -->
+            <div class="p-2 d-flex flex-column align-items-center link-background">
+            <div class="mb-2">
+                <!--input with values needed to add the show to the user's list-->
+                <input type="text" class="hidden" name='addToList' value="<%= content[i].show.id %>,<%= content[i].show.name %>,<% if (content[i].show.image === null) {%>/images/noImage.jpg<% } else {%><%=content[i].show.image.medium%><% } %>
+                <% if (content[i].show.externals.tvrage !== null) {%>  
+                    ,tvrage,<%= content[i].show.externals.tvrage %>
+                <% } else if (content[i].show.externals.thetvdb !== null){%> 
+                    ,thetvdb,<%= content[i].show.externals.thetvdb %>
+                <% } else if (content[i].show.externals.imdb !== null){%> 
+                    ,imdb,<%= content[i].show.externals.imdb %>
+                <% } else {%> 
+                    ,name,<%= content[i].show.name %>
+                <% } %> 
+                <% if (locals.searchedData) { %>,<%= searchedData %><% } %>"
+                />
+                <!--input with values to delete the show from the user's list + btn that changes depending on the user's list containing the chosen show-->
+                <input type="text" class="hidden" name='removeFromList' value="<%= content[i].show.id %>,<%= content[i].show.name %>"/>
+                
+                <% if (locals.idArray && idArray.includes(content[i].show.id)) {%>
+                    <button class="addToList rounded" type="button" onclick="submitForm(this,'/delete')" /> Delete </button>
+                <% } else { %>
+                    <button class="addToList rounded" type="button" onclick="submitForm(this,'/addToShowList')"/> Add to List </button>
+                <% } %>
+
+                <img class="rounded flex-image" 
+                    <% if (content[i].show.image === null) {%>  src='/images/noImage.jpg'
+                    <% } else {%> src='<%=content[i].show.image.medium%>' <% } %>
+                    alt='<%= content[i].show.name %> poster' />
+            </div>
+            <div class="item">
+                <p class="centered-text"> <%= content[i].show.name %></p>
+            </div>
+            </div>
+        </a>
+    </form>
+
+
+    <% } %>
+</div>
+
+<!-- details tab with img, summary, show name and add/delete btn-->
+<% } else if (locals.show) { %>
+ 
+    <div class="container col-xxl-8 px-4 py-2 my-4">
+      <div class="row flex-lg-row-reverse align-items-center g-5 py-2">
+        <div class="col-lg-6">
+          <h1 class="display-5 fw-bold text-body-emphasis lh-1 mb-3 bold-name"><%= show.name %></h1>
+          <p class="lead">
+            <%  function removeEnclosedTags(inputString) {
+                const regex = /<[^>]+>/g;
+                const resultString = inputString.replace(regex, '');
+                return resultString;
+              } %>
+            <%= removeEnclosedTags(show.summary) %></p>
+        </div>
+        <div class="col-10 col-sm-8 col-lg-6 image">
+            <img                     
+            <% if (show.image === null) {%>  src='/images/noImage.jpg'
+            <% } else {%> src='<%=show.image.medium%>' <% } %> class="d-block mx-lg-auto img-fluid rounded singleShow" alt="<%= show.name %> poster" loading="lazy">
+
+            <form action='/addToShowList' method="POST" class="d-flex flex-column justify-content-center align-items-center mt-5">
+                <!--input with values needed to add the show to the user's list-->
+                <input type="text" class="hidden" name='addToList' value="<%= show.id %>,<%= show.name %>,<% if (show.image === null) {%>/images/noImage.jpg<% } else {%><%=show.image.medium%><% } %>
+                <% if (show.externals.tvrage !== null) {%>  
+                    ,tvrage,<%= show.externals.tvrage %>
+                <% } else if (show.externals.thetvdb !== null){%> 
+                    ,thetvdb,<%= show.externals.thetvdb %>
+                <% } else if (show.externals.imdb !== null){%> 
+                    ,imdb,<%= show.externals.imdb %>
+                <% } else {%> 
+                    ,name,<%= show.name %>
+                <% } %> 
+                ,1"/>
+                <!--input with values needed to delete the show-->
+                <input type="text" class="hidden" name='removeFromList' value="<%= show.id %>,<%= show.name %>"/>
+                <!--btn that can add/remove the show from the user's list -->
+                <% if (locals.idArray && idArray.includes(show.id)) { %> 
+                    <button class="details-btn rounded my-5 p-3" type="button" onclick="submitForm(this,'/delete')"/> Delete </button>
+                <% } else { %>
+                    <button class="details-btn rounded my-5 p-3" type="button" onclick="submitForm(this,'/addToShowList')"/> Add to List </button>
+                <%}%>
+            </form> 
+        </div>
+
+      </div>
+    </div>
+  
+  
+  
+  <% } %>
+
+<%- include('partials/footer.ejs'); -%>

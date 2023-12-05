@@ -1,0 +1,57 @@
+<%- include('partials/header.ejs'); -%>
+<!--search field-->
+<form action="/shows" method="POST" class="main-form my-4">
+  <input type="text" name="show" placeholder="Enter a show name" >
+  <input  type="submit" value="OK">
+</form>
+<!--checking if the user is logged in-->
+<% if (locals.currentUser && currentUser[1] == -1) { %>
+  <div class="error">
+    <h4>Log in to view your list</h4>
+  </div>
+<!--checking if the list is empty-->
+<% } else if (locals.error) {%>
+  <div class="error">
+    <h4>Enter the show name above to start creating your list!</h4>
+  </div>
+<!--checking for any messages-->
+<% } else if (locals.content) { %>
+  <%if (locals.message) {%>
+    <div class="error">
+      <h4><%=message%></h4>
+    </div> <% } %>
+<!--creating the list with the search results-->
+<div class="flex-container d-flex flex-row mb-3 justify-content-center align-items-center flex-wrap">
+    <% for( let i = 0; i < content.length; i++ ) {%>   
+    <!-- form that sends to the chosen show's link + hidden submit-->
+    <form action='/details' method="POST" class="flex-form" > 
+        <input type="text" class="hidden" name="chosenShow" value="<%= content[i].idname%>,<%= content[i].idvalue %>"/>
+        <input type="submit" class="hidden">
+      
+        <!-- Actually submitting the form -->
+        <a class="link" onclick="this.closest('form').submit(); return false;"> 
+            <!-- Creating multiple DIVs with shows' names + images + delete btn -->
+            <div class="p-2 d-flex flex-column align-items-center link-background">
+            <div class="mb-2">
+                <input type="text" class="hidden" name='removeFromList' value="<%= content[i].showid %>,<%= content[i].name %>" />
+                <button onclick="submitForm(this, '/delete')" class="addToList rounded" type="button" >Delete</button>
+                <img class="rounded flex-image" src='<%=content[i].url%>' alt='<%= content[i].name %> poster' />
+            </div>
+            <div class="item">
+                <p class="centered-text"> <%= content[i].name %></p>
+            </div>
+            </div>
+        </a>
+    </form>
+
+
+    <% } %>
+</div>
+<!--in case of any unexpected errors-->
+<% } else {%>
+  <div class="error">
+    <h4>Sorry, we could not load your list</h4>
+  </div>
+<% } %>
+
+<%- include('partials/footer.ejs'); -%>
